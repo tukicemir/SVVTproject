@@ -25,6 +25,7 @@ $ ./svvt_project -verbose
 #9 Jobs search (Regression) [PASS]
 #10 Jobs Apply (Regression) [PASS]
 #11 Load test (Smoke) [PASS]
+
 Total tests: 11
 Passed tests: 90.91%
 Failed tests: 9.09%

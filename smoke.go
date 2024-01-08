@@ -14,6 +14,7 @@ func loadTest(wd selenium.WebDriver) error {
 	if err != nil {
 		return err
 	}
+	
 	if len(html) < 10 {
 		return errors.New("page loaded has size < 10")
 	}

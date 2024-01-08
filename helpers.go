@@ -34,11 +34,7 @@ func loginUser(wd selenium.WebDriver, username, password string) error {
 		return err
 	}
 
-	if err := findAndClick(wd, selenium.ByCSSSelector, ".shadow-md"); err != nil {
-		return err
-	}
-
-	return nil
+	return findAndClick(wd, selenium.ByCSSSelector, ".shadow-md")
 }
 
 func logoutUser(wd selenium.WebDriver) error {

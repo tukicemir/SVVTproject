@@ -13,7 +13,7 @@ func main() {
 	verbose := flag.Bool("verbose", false, "use verbose mode (print error messages)")
 	flag.Parse()
 
-	service, err := selenium.NewChromeDriverService("./chromedriver", 4444)
+	service, err := selenium.NewChromeDriverService("./chromedriver", 6666)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error ocurred: %v\n", err)
 		os.Exit(1)
@@ -28,7 +28,6 @@ func main() {
 	}
 
 	driver, err := selenium.NewRemote(caps, "")
-
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error ocurred: %v\n", err)
 		os.Exit(1)
@@ -62,6 +61,8 @@ func main() {
 		}
 		driver.Get("https://klix.ba")
 	}
+
+	fmt.Println()
 
 	fmt.Printf("Total tests: %d\n", len(tests))
 	fmt.Printf("Passed tests: %.2f%%\n", ((float32(len(tests)) - float32(failedTests)) / float32(len(tests)) * 100))

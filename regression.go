@@ -21,7 +21,7 @@ func registerTest(wd selenium.WebDriver) error {
 
 	inputs, err := wd.FindElements(selenium.ByTagName, "input")
 	if err != nil {
-		panic(err)
+		return err
 	}
 
 	for i := range inputs {
@@ -114,6 +114,7 @@ func searchTest(wd selenium.WebDriver) error {
 	if err != nil {
 		return err
 	}
+
 	if txt != "test" {
 		return errors.New("value mismatch")
 	}
@@ -195,9 +196,7 @@ func categoriesTest(wd selenium.WebDriver) error {
 		}
 	}
 
-	wd.Get("https://klix.ba")
-
-	return errors.New("test failed")
+	return errors.New("test failed; couldn't find \"Naslovnica\"")
 }
 
 func tagsTest(wd selenium.WebDriver) error {
@@ -207,6 +206,7 @@ func tagsTest(wd selenium.WebDriver) error {
 	}
 
 	tagName := ""
+	found := false
 
 	for _, link := range links {
 		href, err := link.GetAttribute("href")
@@ -223,12 +223,17 @@ func tagsTest(wd selenium.WebDriver) error {
 				}
 			}
 			if ok {
+				found = true
 				if err := wd.Get("https://klix.ba/" + href); err != nil {
 					return err
 				}
 				break
 			}
 		}
+	}
+
+	if !found {
+		return errors.New("couldn't find tag with only letters")
 	}
 
 	nav, err := wd.FindElement(selenium.ByCSSSelector, "#breadcrumb")
@@ -254,6 +259,7 @@ func tagsTest(wd selenium.WebDriver) error {
 	if err != nil {
 		return err
 	}
+
 	if strings.ToLower(txt) != strings.ToLower(tagName) {
 		return errors.New("value mismatch")
 	}
@@ -277,7 +283,7 @@ func jobsListingTest(wd selenium.WebDriver) error {
 	}
 
 	if placeholder != "pretraži oglase za posao" {
-		return errors.New("value mismatch")
+		return errors.New("could not find correct placeholder")
 	}
 
 	return nil
@@ -300,21 +306,32 @@ func jobsSearchTest(wd selenium.WebDriver) error {
 		return err
 	}
 
+	found := false
+
 	for _, elem := range elems {
 		txt, err := elem.Text()
 		if err != nil {
 			continue
 		}
+
 		if strings.Contains(txt, "Detaljna pretraga") {
+			found = true
 			elem.Click()
 		}
+	}
+
+	if !found {
+		return errors.New("could not find button to search")
 	}
 
 	return nil
 }
 
 func jobsApplyTest(wd selenium.WebDriver) error {
-	wd.Get("https://posao.klix.ba")
+	if err := wd.Get("https://posao.klix.ba"); err != nil {
+		return err
+	}
+
 	searchField, err := wd.FindElement(selenium.ByCSSSelector, "#simple-search")
 	if err != nil {
 		return err
@@ -327,14 +344,21 @@ func jobsApplyTest(wd selenium.WebDriver) error {
 		return err
 	}
 
+	found := false
+
 	for _, elem := range elems {
 		txt, err := elem.Text()
 		if err != nil {
 			continue
 		}
 		if strings.Contains(txt, "Detaljna pretraga") {
+			found = true
 			elem.Click()
 		}
+	}
+
+	if !found {
+		return errors.New("could not find button to search")
 	}
 
 	links, err := wd.FindElements(selenium.ByTagName, "a")
